@@ -3,6 +3,7 @@ package br.com.tokiomarine.seguradora.service;
 import br.com.tokiomarine.seguradora.exception.ResourceNotFoundException;
 import br.com.tokiomarine.seguradora.model.Client;
 import br.com.tokiomarine.seguradora.repository.ClientRepository;
+import br.com.tokiomarine.seguradora.validation.ClientValidator;
 import org.springframework.stereotype.Service;
 import java.util.List;
 
@@ -10,9 +11,11 @@ import java.util.List;
 public class ClientService {
 
     private final ClientRepository clientRepository;
+    private final ClientValidator clientValidator;
 
-    public ClientService(ClientRepository clientRepository) {
+    public ClientService(ClientRepository clientRepository, ClientValidator clientValidator) {
         this.clientRepository = clientRepository;
+        this.clientValidator = clientValidator;
     }
 
     public List<Client> getAllClients() {
@@ -25,6 +28,7 @@ public class ClientService {
     }
 
     public Client saveClient(Client client) {
+        clientValidator.validateClient(client);
         return clientRepository.save(client);
     }
 
