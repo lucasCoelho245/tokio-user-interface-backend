@@ -1,13 +1,16 @@
 package br.com.tokiomarine.seguradora.model;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import lombok.*;
 
 import javax.persistence.*;
 import java.util.List;
 
 @Entity
-@Getter @Setter
-@NoArgsConstructor @AllArgsConstructor
+@Getter
+@Setter
+@NoArgsConstructor
+@AllArgsConstructor
 public class Client {
 
     @Id
@@ -27,5 +30,7 @@ public class Client {
     private String phone;
 
     @OneToMany(mappedBy = "client", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<UserAddress> addresses;
+    @JsonManagedReference
+    private List<Address> addresses;
+
 }
