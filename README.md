@@ -1,57 +1,121 @@
-# PROVA TESTE
+# Backend da TokioMarine Seguradora
 
-## Criar uma API rest utilizando JPA
+API para o funcionamento do front-end de cadastro de clientes e consulta de dados de endereço a partir do CEP.
 
-OBS: a conexão do banco já esta configurada via H2.
+## Requisitos do Sistema
 
-Para mapeamento das entidades verificar o arquivo (data.sql).
+- Java 11
+- Spring Boot 2.1.5
+- Maven 3.9.5
+- H2 (Banco de Dados em Memória)
 
-A API deverá conter as seguintes características:
+## Instalação
 
-1. CRUD de usuários
-2. CRUD dos endereços do usuário
+1. Clone o repositório para sua máquina local.
+    ```bash
+    git clone https://github.com/lucasCoelho245/tokio-user-interface-backend.git
+    ```
 
-**Consumir um serviço rest**
+2. Navegue até o diretório do projeto.
+    ```bash
+    cd tokio-user-interface-backend
+    ```
 
-Você devera consumir o seguinte serviço para retorna o endereço dado o CEP
+3. Compile o projeto e baixe as dependências.
+    ```bash
+    mvn clean install
+    ```
 
-Url: https://api.brasilaberto.com/v1/zipcode/{cep}
+4. Inicie a aplicação.
+    ```bash
+    mvn spring-boot:run
+    ```
 
-Exemplo de chamada
+A aplicação estará disponível em `http://localhost:8080`.
+
+## Uso
+
+A API permite o cadastro de clientes e a consulta de endereços com base no CEP. A URL base para interagir com a API é `http://localhost:8080/clients`.
+
+### Endpoints Principais
+
+#### Cadastro de Cliente
+- **`POST /clients`**: Cadastra um novo cliente, incluindo informações de nome, CPF, email e endereço (CEP).
+    - Body:
+      ```json
+      {
+        "name": "João Silva",
+        "cpf": "123.456.789-00",
+        "email": "joao@example.com",
+        "phone": "(11) 99999-9999",
+        "addresses": [
+          {
+            "street": "Rua Exemplo",
+            "city": "São Paulo",
+            "state": "SP",
+            "complement": "",
+            "district": "Centro",
+            "zipcode": "01235-000"
+          }
+        ]
+      }
+      ```
+
+#### Consulta de Clientes
+- **`GET /clients`**: Retorna todos os clientes cadastrados, incluindo os dados de endereço associados a cada cliente.
+    - Exemplo de resposta:
+      ```json
+      [
+        {
+          "id": 1,
+          "name": "Usuário Teste",
+          "cpf": "123.456.789-00",
+          "email": "teste@example.com",
+          "phone": "(11) 99999-9999",
+          "addresses": [
+            {
+              "id": 1,
+              "street": "Rua Traipu",
+              "city": "São Paulo",
+              "state": "SP",
+              "complement": "",
+              "district": "Pacaembu",
+              "zipcode": "01235-000"
+            }
+          ]
+        }
+      ]
+      ```
+
+#### Persistência de Dados
+Foi optado por usar o banco de dados H2 para persistência de dados em memória. Para limpar os dados do banco, basta reiniciar a aplicação.
+
+
+#### Consumindo um Serviço Externo de CEP
+
+#### A  API também consome o seguinte serviço para obter o endereço dado o CEP:
+
+- **URL**: `https://viacep.com.br/ws/{cep}/json/`
+  Exemplo de requisição:
 ```sh
 # Request
-$ curl  https://api.brasilaberto.com/v1/zipcode/01001000
+$ curl https://viacep.com.br/ws/01001000/json/
 
 # Response
 {
-    "meta": {
-        "currentPage": 1,
-        "itemsPerPage": 1,
-        "totalOfItems": 1,
-        "totalOfPages": 1
-    },
-    "result": {
-        "street": "Praça da Sé",
-        "complement": "lado ímpar",
-        "district": "Sé",
-        "districtId": "1",
-        "city": "São Paulo",
-        "cityId": "1",
-        "ibgeId": "3550308",
-        "state": "São Paulo",
-        "stateIbgeId": null,
-        "stateShortname": "SP",
-        "zipcode": "01001000"
-    }
+  "cep": "01001-000",
+  "logradouro": "Praça da Sé",
+  "complemento": "lado ímpar",
+  "unidade": "",
+  "bairro": "Sé",
+  "localidade": "São Paulo",
+  "uf": "SP",
+  "estado": "São Paulo",
+  "regiao": "Sudeste",
+  "ibge": "3550308",
+  "gia": "1004",
+  "ddd": "11",
+  "siafi": "7107"
 }
-```
 
-
-## Interface (Opcional)
-
-Criar uma interface consumindo os serviços desenvolvidos utilizando uma das tecnologias abaixo:
-
-1. Angular
-2. Vue
-3. Thymeleaf
 
