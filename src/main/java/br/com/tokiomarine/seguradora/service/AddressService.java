@@ -7,6 +7,7 @@ import br.com.tokiomarine.seguradora.repository.AddressRepository;
 import br.com.tokiomarine.seguradora.repository.ClientRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.web.client.RestTemplate;
 
 import javax.transaction.Transactional;
 import java.util.List;
@@ -17,7 +18,8 @@ import java.util.stream.Collectors;
 public class AddressService {
 
     private final AddressRepository addressRepository;
-    private final ClientRepository clientRepository; // Adicionado para associar endereços ao cliente
+    private final ClientRepository clientRepository;
+    private final RestTemplate restTemplate;
 
     public List<AddressDTO> getAllAddresses() {
         return addressRepository.findAll().stream()
@@ -39,7 +41,7 @@ public class AddressService {
 
     @Transactional
     public AddressDTO createAddress(AddressDTO addressDTO) {
-        Client client = clientRepository.findById(addressDTO.getClientId()) // Obtém o cliente associado
+        Client client = clientRepository.findById(addressDTO.getClientId())
                 .orElseThrow(() -> new RuntimeException("Cliente não encontrado com ID: " + addressDTO.getClientId()));
 
         Address address = new Address();
@@ -48,7 +50,7 @@ public class AddressService {
         address.setCity(addressDTO.getCity());
         address.setState(addressDTO.getState());
         address.setZipcode(addressDTO.getZipcode());
-        address.setClient(client); // Associa o endereço ao cliente
+        address.setClient(client);
 
         Address savedAddress = addressRepository.save(address);
         return AddressDTO.fromEntity(savedAddress);
@@ -74,5 +76,14 @@ public class AddressService {
         Address address = addressRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Endereço não encontrado com ID: " + id));
         addressRepository.delete(address);
+    }
+
+    public AddressDTO getAddressByCep(String cep) {
+        String apiUrl = "https://viacep.com.br/ws/" + cep + "/json/";
+        AddressDTO address = restTemplate.getForObject(apiUrl, AddressDTO.class);
+        if (address == null) {
+            throw new RuntimeException("Endereço não encontrado para o CEP: " + cep);
+        }
+        return address;
     }
 }

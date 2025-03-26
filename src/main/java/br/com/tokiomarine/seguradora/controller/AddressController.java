@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/addresses")
+@RequestMapping("/address")
 @RequiredArgsConstructor
 public class AddressController {
 
@@ -36,13 +36,20 @@ public class AddressController {
         return ResponseEntity.ok(addressService.getAllAddresses());
     }
 
-    @GetMapping("/{id}")
+    @GetMapping("/id/{id}")  // Alterado o path para evitar ambiguidade
     public ResponseEntity<AddressDTO> getAddressById(@PathVariable Long id) {
-        return ResponseEntity.ok(addressService.getAddressById(id));
+        AddressDTO address = addressService.getAddressById(id);
+        return ResponseEntity.ok(address);
     }
 
     @GetMapping("/client/{clientId}")
     public ResponseEntity<List<AddressDTO>> getAddressesByClientId(@PathVariable Long clientId) {
         return ResponseEntity.ok(addressService.getAddressesByClientId(clientId));
+    }
+
+    @GetMapping("/cep/{cep}")  // Este mapeamento está correto
+    public ResponseEntity<AddressDTO> getAddressByCep(@PathVariable String cep) {
+        AddressDTO address = addressService.getAddressByCep(cep);
+        return ResponseEntity.ok(address);
     }
 }

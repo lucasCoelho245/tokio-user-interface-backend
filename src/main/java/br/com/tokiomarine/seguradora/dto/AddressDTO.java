@@ -16,6 +16,7 @@ public class AddressDTO {
     private String zipcode;
     private Long clientId;
 
+    // Construtor usado quando vem da entidade
     public static AddressDTO fromEntity(Address address) {
         return new AddressDTO(
                 address.getId(),
@@ -26,5 +27,15 @@ public class AddressDTO {
                 address.getZipcode(),
                 address.getClient() != null ? address.getClient().getId() : null
         );
+    }
+
+    public static AddressDTO fromViaCepResponse(java.util.Map<String, String> response) {
+        AddressDTO dto = new AddressDTO();
+        dto.setStreet(response.get("logradouro"));
+        dto.setDistrict(response.get("bairro"));
+        dto.setCity(response.get("localidade"));
+        dto.setState(response.get("uf"));
+        dto.setZipcode(response.get("cep"));
+        return dto;
     }
 }
