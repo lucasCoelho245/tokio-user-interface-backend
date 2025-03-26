@@ -47,7 +47,7 @@ public class AddressController {
         return ResponseEntity.ok(addressService.getAddressesByClientId(clientId));
     }
 
-    @GetMapping("/cep/{cep}")  // Este mapeamento está correto
+    @GetMapping("/cep/{cep}")
     public ResponseEntity<AddressDTO> getAddressByCep(@PathVariable String cep) {
         AddressDTO address = addressService.getAddressByCep(cep);
         return ResponseEntity.ok(address);
