@@ -36,7 +36,7 @@ public class AddressController {
         return ResponseEntity.ok(addressService.getAllAddresses());
     }
 
-    @GetMapping("/id/{id}")  // Alterado o path para evitar ambiguidade
+    @GetMapping("/id/{id}")
     public ResponseEntity<AddressDTO> getAddressById(@PathVariable Long id) {
         AddressDTO address = addressService.getAddressById(id);
         return ResponseEntity.ok(address);
